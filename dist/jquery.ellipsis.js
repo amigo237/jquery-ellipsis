@@ -1,28 +1,30 @@
-/*! jQuery ellipsis - v1.0.8 - 2013-06-23
+/*! jQuery ellipsis - v1.0.10 - 2013-08-31
 * https://github.com/STAR-ZERO/jquery-ellipsis
 * Copyright (c) 2013 Kenji Abe; Licensed MIT */
-
 (function($) {
     $.fn.ellipsis = function(options) {
 
-        // デフォルトオプション
+        // default option
         var defaults = {
-            'row' : 1, // 省略行数
-            'char' : '...' // 省略文字
+            'row' : 1, // show rows
+            'onlyFullWords': false, // set to true to avoid cutting the text in the middle of a word
+            'char' : '...' // ellipsis
         };
 
         options = $.extend(defaults, options);
 
         this.each(function() {
-            // 現在のテキストを取得
+            // get element text
             var $this = $(this);
             var text = $this.text();
             var origHeight = $this.height();
 
-            // 1行分の高さを取得
+            // get height
             $this.text('a');
+            var lineHeight =  parseFloat($this.css("lineHeight"), 10);
             var rowHeight = $this.height();
-            var targetHeight = rowHeight * options.row;
+            var gapHeight = lineHeight > rowHeight ? (lineHeight - rowHeight) : 0;
+            var targetHeight = gapHeight * (options.row - 1) + rowHeight * options.row;
 
             if (origHeight <= targetHeight) {
                 $this.text(text);
@@ -38,14 +40,20 @@
 
                 $this.text(text.slice(0, length) + options['char']);
 
-                if ($this.height () <= targetHeight) {
+                if ($this.height() <= targetHeight) {
                     start = length;
                 } else {
                     end = length - 1;
                 }
             }
 
-            $this.text(text.slice(0, start) + options['char']);
+            text = text.slice(0, start);
+
+            if (options.onlyFullWords) {
+                text = text.replace(/[\u00AD\w]+$/, ''); // remove fragment of the last word together with possible soft-hyphen characters
+            }
+
+            $this.text(text + options['char']);
         });
 
         return this;

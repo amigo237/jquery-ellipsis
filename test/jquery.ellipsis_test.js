@@ -1,6 +1,3 @@
-/*global QUnit:false, module:false, test:false, asyncTest:false, expect:false*/
-/*global start:false, stop:false ok:false, equal:false, notEqual:false, deepEqual:false*/
-/*global notDeepEqual:false, strictEqual:false, notStrictEqual:false, raises:false*/
 (function($) {
 
     test('one line ellipsis', function() {
@@ -46,6 +43,16 @@
             equal(text.lastIndexOf('...'), text.length - 3);
             equal($(this).height(), $('#ref-height').height());
         });
+    });
+
+    test('two line ellipsis with full word setting', function() {
+        $('#two-char').ellipsis({
+            row: 2,
+            onlyFullWords: true
+        });
+        var text = $('#two-char').text();
+        equal(text.lastIndexOf(' ...'), text.length - 4);
+        equal($('#two-char').height(), $('#ref-height').height() * 2);
     });
 
 }(jQuery));
