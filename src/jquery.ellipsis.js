@@ -5,7 +5,8 @@
         var defaults = {
             'row' : 1, // show rows
             'onlyFullWords': false, // set to true to avoid cutting the text in the middle of a word
-            'char' : '...' // ellipsis
+            'char' : '...', // ellipsis
+            'callback': function() {}
         };
 
         options = $.extend(defaults, options);
@@ -25,6 +26,7 @@
 
             if (origHeight <= targetHeight) {
                 $this.text(text);
+                options.callback.call(this);
                 return;
             }
 
@@ -51,6 +53,8 @@
             }
 
             $this.text(text + options['char']);
+
+            options.callback.call(this);
         });
 
         return this;
